@@ -1,6 +1,6 @@
 import express from 'express'
 import path from 'path'
-import socket, { Socket } from 'socket.io'
+import { Server } from 'socket.io'
 import { toBuffer } from 'qrcode'
 import fetch from 'node-fetch'
 
@@ -23,7 +23,7 @@ function connect(conn, PORT) {
         console.log('App listened on port', PORT)
         if (opts['keepalive']) keepAlive()
     })
-    let io = socket(server)
+    let io = new Server(server)
     io.on('connection', socket => {
         let { unpipeEmit } = pipeEmit(conn, socket, 'conn-')
         socket.on('disconnect', unpipeEmit)
