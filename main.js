@@ -205,7 +205,7 @@ filesInit().then(_ => console.log(Object.keys(global.plugins))).catch(console.er
 global.reload = async (_ev, filename) => {
   if (pluginFilter(filename)) {
     readdirSync(pluginFolder).forEach(async dir => {
-      let dir = global.__filename(join(`${pluginFolder}/${dir}`, filename), true)
+      let _dir = global.__filename(join(`${pluginFolder}/${dir}`, filename), true)
       if (filename in global.plugins) {
         if (existsSync(dir)) conn.logger.info(`re - require plugin '${filename}'`)
         else {
@@ -213,13 +213,13 @@ global.reload = async (_ev, filename) => {
           return delete global.plugins[filename]
         }
       } else conn.logger.info(`requiring new plugin '${filename}'`)
-      let err = syntaxerror(readFileSync(dir), filename, {
+      let err = syntaxerror(readFileSync(_dir), filename, {
         sourceType: 'module',
         allowAwaitOutsideFunction: true
       })
       if (err) conn.logger.error(`syntax error while loading '${filename}'\n${format(err)}`)
       else try {
-        const module = (await import(`${global.__filename(dir)}?update=${Date.now()}`))
+        const module = (await import(`${global.__filename(_dir)}?update=${Date.now()}`))
         global.plugins[filename] = module.default || module
       } catch (e) {
         conn.logger.error(`error require plugin '${filename}\n${format(e)}'`)
@@ -229,9 +229,11 @@ global.reload = async (_ev, filename) => {
     })
   }
 }
-Object.freeze(global.reload)
-watch(`${pluginFolder}/${dir}`, global.reload)
-await global.reloadHandler()
+readdirSync(pluginFolder).forEach(async dir => {
+  Object.freeze(global.reload)
+  watch(`${pluginFolder}/${dir}`, global.reload)
+  await global.reloadHandler()
+})
 
 // Quick Test
 async function _quickTest() {
