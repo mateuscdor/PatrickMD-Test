@@ -20,10 +20,10 @@ function connect(conn, PORT) {
     })
 
     let server = app.listen(PORT, () => {
-      console.log('App listened on port', PORT)
-      if (opts['keepalive']) keepAlive()
+        console.log('App listened on port', PORT)
+        if (opts['keepalive']) keepAlive()
     })
-    let io = Socket(server)
+    let io = new Socket(server)
     io.on('connection', socket => {
         let { unpipeEmit } = pipeEmit(conn, socket, 'conn-')
         socket.on('disconnect', unpipeEmit)
@@ -44,11 +44,11 @@ function pipeEmit(event, event2, prefix = '') {
 }
 
 function keepAlive() {
-  const url = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`
-  if (/(\/\/|\.)undefined\./.test(url)) return
-  setInterval(()=> {
-    fetch(url).catch(console.error)
-  }, 5 * 1000 * 60)
+    const url = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`
+    if (/(\/\/|\.)undefined\./.test(url)) return
+    setInterval(() => {
+        fetch(url).catch(console.error)
+    }, 5 * 1000 * 60)
 }
 
 
