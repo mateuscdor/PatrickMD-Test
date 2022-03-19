@@ -10,7 +10,7 @@
         "plugins": "plugins"
     },
     "scripts": {
-        "start": "node . --autoread --restrict --db mongodb+srv://PatrickAFK:225670@patrick-afk.wvl9a.mongodb.net/PatrickWhatsapp",
+        "start": "node . --restrict --self --server",
         "test": "node test.js",
         "test2": "nodemon index.js"
     },
