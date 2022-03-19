@@ -187,7 +187,7 @@ const pluginFolder = global.__dirname(join(__dirname, './plugins/index'))
 const pluginFilter = filename => /\.js$/.test(filename)
 global.plugins = {}
 async function filesInit() {
-  readdirSync(pluginFolder).forEach(dir => {
+  readdirSync(pluginFolder).forEach(async dir => {
     for (let filename of readdirSync(`${pluginFolder}/${dir}`).filter(pluginFilter)) {
       try {
         let file = global.__filename(join(`${pluginFolder}/${dir}`, filename))
@@ -204,7 +204,7 @@ filesInit().then(_ => console.log(Object.keys(global.plugins))).catch(console.er
 
 global.reload = async (_ev, filename) => {
   if (pluginFilter(filename)) {
-    readdirSync(pluginFolder).forEach(dir => {
+    readdirSync(pluginFolder).forEach(async dir => {
       let dir = global.__filename(join(`${pluginFolder}/${dir}`, filename), true)
       if (filename in global.plugins) {
         if (existsSync(dir)) conn.logger.info(`re - require plugin '${filename}'`)
